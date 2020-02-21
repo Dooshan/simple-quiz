@@ -1,4 +1,11 @@
-<?php require_once 'database.php' ?>
+<?php require_once 'database.php';
+
+  // Get total questions
+ $sql = "SELECT * FROM questions";
+ $result = $conn->query($sql);
+ $num_questions = $result->num_rows;
+ 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +27,9 @@
       <h2>Test</h2>
       <p>This is multiply choice quiz </p>
       <ul>
-        <li><strong>Number of question: </strong>5</li>
+        <li><strong>Number of question: </strong><?= $num_questions ?></li>
         <li><strong>Type: </strong>Multiple Choice </li>
-        <li><strong>Estimated Time: </strong>4 minutes</li>
+        <li><strong>Estimated Time: </strong><?= $num_questions * 0.5 ?> minutes</li>
       </ul>
       <a href="question.php?n=1" class="start">Start Quiz</a>
     </div>
@@ -30,7 +37,9 @@
 
   <footer>
     <div class="container">
-      Copyright  &copy; 2020, Quiz
+      Copyright  &copy; 2018- <?= date("Y"); ?>, Quiz
+      
+
     </div>
   </footer>
   

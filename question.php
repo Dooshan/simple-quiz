@@ -1,3 +1,18 @@
+<?php 
+include "database.php";
+
+// Set question number 
+$question_number = $_GET['n'];
+
+$get_question = "SELECT * FROM questions WHERE question_number = $question_number" ;
+$result = $conn->query($get_question);
+$question = $result->fetch_assoc();
+
+//Get choices 
+$sql = "SELECT * FROM choices WHERE question_number = $question_number";
+$choices = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,16 +31,16 @@
 
   <main>
     <div class="container">
-     <div class="current">Question 1 of 5</div>
+     <div class="current">Question <?= $question['question_number']?> of 5</div>
      <p class="question">
-            What does the initials of PHP stand for?  
+          <?= $question['text'] ?>
      </p>
      <form action="process.php" method="POST">
        <ul class="choices">
-         <li><input type="radio" name="choice" value="1">Personal Home Page</li>
-         <li><input type="radio" name="choice" value="1">Private Home Page</li>
-         <li><input type="radio" name="choice" value="1">Public Home Page</li>
-         <li><input type="radio" name="choice" value="1">PHP: Hypertext Preprocessor</li>
+         <?php while($row = $choices->fetch_assoc()) : ?>
+          <li><input type="radio" name="choice" value="<?=$row['id']?>"><?= $row['text'] ?></li>
+         <?php endwhile; ?>
+
        </ul>
        <input type="submit" value="Submit">
      </form>
