@@ -1,5 +1,6 @@
 <?php require_once 'database.php';
 
+
   // Get total questions
  $sql = "SELECT * FROM questions";
  $result = $conn->query($sql);

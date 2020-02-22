@@ -1,5 +1,10 @@
 <?php 
 include "database.php";
+session_start(); 
+
+$sql = "SELECT * FROM questions";
+$result = $conn->query($sql);
+$total_question = $result->num_rows;
 
 // Set question number 
 $question_number = $_GET['n'];
@@ -31,18 +36,19 @@ $choices = $conn->query($sql);
 
   <main>
     <div class="container">
-     <div class="current">Question <?= $question['question_number']?> of 5</div>
+     <div class="current">Question <?= $question['question_number']?> of <?= $total_question?> </div>
      <p class="question">
           <?= $question['text'] ?>
      </p>
      <form action="process.php" method="POST">
        <ul class="choices">
          <?php while($row = $choices->fetch_assoc()) : ?>
-          <li><input type="radio" name="choice" value="<?=$row['id']?>"><?= $row['text'] ?></li>
+          <li><input type="radio" name="choice" value="<?= $row['text'];  ?>" ><?= $row['text']; ?></li>
          <?php endwhile; ?>
 
        </ul>
-       <input type="submit" value="Submit">
+       <input type="submit" name="submit" value="Submit">
+       <input type="hidden" name="question_number" value="<?= $question_number?>">
      </form>
     </div>
   </main>

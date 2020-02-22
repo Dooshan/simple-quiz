@@ -1,3 +1,55 @@
+<?php 
+require_once 'database.php';
+if(isset($_POST['submit'])) {
+  
+  //Get posted variables 
+  $question_number = $_POST['question_number'];
+  $question_text = $_POST['question_text'];
+  $correct_choice = $_POST['correct_choice'];
+
+  //Creating choices array 
+  $choices = [];
+  $choices[1] = $_POST['choice1'];
+  $choices[2] = $_POST['choice2'];
+  $choices[3] = $_POST['choice3'];
+  $choices[4] = $_POST['choice4'];
+  $choices[5] = $_POST['choice5'];
+
+  // Inserting Question query
+  $query = "INSERT INTO `questions` (question_number, text) VALUES ('$question_number', '$question_text')" ; 
+  $insert_row = $conn->query($query) or die($conn->error.__LINE__);
+
+  // Validate insert choices
+  if($insert_row) {
+    foreach ($choices as $choice => $answer) {
+      if($answer != "") {
+        if ($correct_choice == $choice) {
+          $is_correct = 1;
+        } else {
+          $is_correct = 0;
+        }
+        //Choice query 
+        $query = "INSERT INTO `choices` (question_number, is_correct, text) VALUES ('$question_number', '$is_correct', '$answer')" ;
+        $insert_row = $conn->query($query) or die($conn->error.__LINE__); 
+      }
+      // Validate insert 
+      if($insert_row) {
+        continue;
+      }else {
+        die('Greska'. $conn->error);
+      }
+    } 
+    $msg = "Question has been added ";
+  }
+}
+$sql = "SELECT * FROM questions";
+$result = $conn->query($sql);
+$total_question = $result->num_rows;
+$next = $total_question+1;
+echo $next; 
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,10 +69,15 @@
   <main>
     <div class="container">
       <h2>Add a question</h2>
+      <?php 
+      if(isset($msg)) {
+        echo "<p>$msg</p>";
+      }
+      ?>
       <form action="add.php" method="post">
         <p>
           <label>Question number: </label>
-          <input type="number" name="question_number">
+          <input type="number" name="question_number" value="<?= $next; ?>">
         </p>
         <p>
           <label>Question text: </label>
@@ -50,7 +107,7 @@
           <label>Correct Choice Number: </label>
           <input type="text" name="correct_choice">
         </p>
-        <input type="submit" value="Submit">
+        <input type="submit"  name = "submit" value="Submit">
       </form>
     </div>
   </main>
